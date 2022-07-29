@@ -6,10 +6,10 @@ on:
     inputs:
       image_name:
         required: true
+        type: string
       repository:
         required: true
         type: string
-        default: ${{ github.event.repository.name }}
 jobs:
   deploy-test:
     runs-on: ubuntu-latest
