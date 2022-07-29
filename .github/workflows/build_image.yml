@@ -10,8 +10,8 @@ on:
         default: ${{ github.event.repository.name }}
 
 jobs:
-  approved:
-    if: github.event.review.state == 'approved'
+  reusable_build:
+    #if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR was approved"
