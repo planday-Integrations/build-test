@@ -1,0 +1,31 @@
+name: build_image_from_main
+on:
+  pull_request_review:
+    types: [submitted]
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+        default: ${{ github.event.repository.name }}
+
+jobs:
+  approved:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This PR was approved"
+      - name: ACR build
+        id: acr
+        uses: azure/acr-build@v1
+        with:
+          service_principal: ${{ secrets.ACR_APPID }}
+          service_principal_password: ${{ secrets.ACR_PASSWORD }}
+          tenant: ${{ secrets.ACR_TENANT }}
+          registry: ${{ secrets.ACR_REGISTRY }}
+          repository: ${{ inputs.repository }} 
+          image: image
+          git_access_token: ${{ secrets.git_access_token }}
+          folder: /
+          dockerfile: Dockerfile
+          branch: main
