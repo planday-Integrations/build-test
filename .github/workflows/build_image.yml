@@ -13,13 +13,10 @@ on:
     secrets:
       registry: 
         required: true
-        type: string
       username: 
         required: true
-        type: string
       password: 
         required: true
-        type: string
 jobs:
   deploy-test:
     runs-on: ubuntu-latest
