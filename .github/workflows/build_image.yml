@@ -10,6 +10,7 @@ on:
       repository:
         required: true
         type: string
+    secrets:
       registry: 
         required: true
         type: string
@@ -33,14 +34,14 @@ jobs:
       - name: Log in to Azure ACR
         uses: docker/login-action@v1.10.0
         with:
-          registry: ${{ inputs.registry }}
-          username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
+          registry: ${{ secrets.registry }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ inputs.registry }}/test-${{inputs.image_name}}:1.0.${{github.run_number}}
+          tags: ${{ secrets.registry }}/test-${{inputs.image_name}}:1.0.${{github.run_number}}
           file: Dockerfile
   deploy-production:
     if: github.event.review.state == 'approved'
@@ -56,13 +57,13 @@ jobs:
       - name: Log in to Azure ACR
         uses: docker/login-action@v1.10.0
         with:
-          registry: ${{ inputs.registry }}
-          username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
+          registry: ${{ secrets.registry }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ inputs.registry }}/${{env.API_NAME}}:1.0.${{github.run_number}}
+          tags: ${{ secrets.registry }}/${{env.API_NAME}}:1.0.${{github.run_number}}
           file: Dockerfile
 
