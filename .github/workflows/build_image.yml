@@ -8,10 +8,10 @@ on:
       repository:
         required: true
         type: string
-      registry: 
+      version: 
         type: string
         required: true
-      version: 
+      dockerfile: 
         type: string
         required: true
     secrets: 
@@ -21,13 +21,13 @@ on:
         required: true
       azure_subscription_id: 
         required: true
+      registry: 
+        required: true
 jobs:
   deploy-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3 
-        with: 
-          repository: ${{inputs.repository}}  
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
@@ -51,7 +51,7 @@ jobs:
         with:
           push: true
           tags: ${{ inputs.registry }}/test-${{inputs.image_name}}:${{inputs.version}}
-          file: Dockerfile
+          file: ${{ inputs.dockerfile }}
 
   deploy-production:
     if: github.event.review.state == 'approved'
@@ -80,5 +80,5 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.registry }}/${{env.API_NAME}}:${{inputs.version}}
-          file: Dockerfile
+          file: ${{ inputs.dockerfile }}
 
