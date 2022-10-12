@@ -46,14 +46,14 @@ jobs:
           subscription-id: ${{ secrets.azure_subscription_id }}
 
       - name: Log in to Azure ACR
-        run: -|
-          az acr login -n ${{inputs.registry}}
+        run: |
+          az acr login -n ${{secrets.registry}}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ inputs.registry }}/test-${{inputs.image_name}}:${{inputs.version}}
+          tags: ${{ secrets.registry }}/test-${{inputs.image_name}}:${{inputs.version}}
           file: ${{ inputs.dockerfile }}
 
   deploy-production:
