@@ -5,9 +5,6 @@ on:
       image_name:
         required: true
         type: string
-      repository:
-        required: true
-        type: string
       version: 
         type: string
         required: true
