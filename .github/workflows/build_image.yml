@@ -79,7 +79,7 @@ jobs:
           az acr login -n ${{secrets.registry}}
 
       - name: Build and push container image to registry
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
           tags: ${{ secrets.registry }}/${{env.API_NAME}}:${{inputs.version}}
