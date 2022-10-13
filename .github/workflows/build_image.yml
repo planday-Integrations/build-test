@@ -1,7 +1,7 @@
 name: build and push docker image
 
 env:
-  IMAGE_PREFIX: "test"
+  IMAGE_PREFIX: "test-"
 
 on:
   workflow_call:
@@ -27,10 +27,10 @@ on:
         required: true
     outputs:
       image_name:
-        description: "Image-name"
+        description: "image-name"
         value: ${{ jobs.build-push-image.outputs.image_name }}
       image_version:
-        description: "Image-version"
+        description: "image-version"
         value: ${{ jobs.build-push-image.outputs.image_version }}
 
 jobs:
@@ -80,7 +80,7 @@ jobs:
           push: true
           tags: | 
             ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:${{inputs.version}}
-            ${{ secrets.registry }}/	${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
+            ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
       - name: Set Outputs
         id: set-outputs
