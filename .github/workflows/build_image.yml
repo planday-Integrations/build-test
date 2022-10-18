@@ -56,7 +56,8 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the OIDC JWT
       contents: read  # This is required for actions/checkout
-    
+      packages: read
+      
     runs-on: ubuntu-latest
     outputs:
       image_name: ${{ steps.set-outputs.outputs.image_name }}
