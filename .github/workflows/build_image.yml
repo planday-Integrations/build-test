@@ -30,9 +30,12 @@ on:
       registry: 
         required: true
       app_id:
-        required: true
+        required: false
       private_key: 
+        required: false
+      mdu_pat:
         required: true
+
     outputs:
       image_name:
         description: "image-name"
@@ -100,7 +103,7 @@ jobs:
             ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
-            NPM_TOKEN='${{ steps.generate_token.outputs.token }}'
+            NPM_TOKEN=${{ secrets.mdu_pat }}
             ${{inputs.dockerargs}}
       - name: Set Outputs
         id: set-outputs
