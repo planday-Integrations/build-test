@@ -29,6 +29,8 @@ on:
         required: true
       registry: 
         required: true
+      npm_token:
+        required: true
     outputs:
       image_name:
         description: "image-name"
@@ -87,6 +89,7 @@ jobs:
             ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
+            NPM_TOKEN=${{secrets.npm_token}}
             ${{inputs.dockerargs}}
       - name: Set Outputs
         id: set-outputs
