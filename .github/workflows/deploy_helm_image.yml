@@ -68,6 +68,12 @@ jobs:
     - name: Log in to Azure ACR
       run: |
         az acr login -n ${{secrets.azure_acr_registry}}
+    
+    - name: 'Add helm repository'
+      run: |
+        az acr helm repo add --name ${{secrets.azure_acr_registry}}
+        helm repo update
+        helm repo ls
 
     - uses: azure/setup-helm@v3
       with:
@@ -81,10 +87,8 @@ jobs:
         cluster-name: ${{ secrets.cluster_resource_group }}
         admin: 'true'
 
-    - name: 'Add helm repository'
-      run: |
-        az acr helm repo add --name ${{secrets.azure_acr_registry}}
+
 
     - name: 'Deploy'
       run: |
-        helm upgrade ${{inputs.release_name}} --install --namespace ${{inputs.environment}} --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}}
+        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]) --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}}
