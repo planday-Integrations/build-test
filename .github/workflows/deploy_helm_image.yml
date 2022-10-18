@@ -88,8 +88,11 @@ jobs:
         cluster-name: ${{ secrets.cluster_resource_group }}
         admin: 'true'
 
-
-
     - name: 'Deploy'
       run: |
-        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]") --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}} --create-namespace
+        namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
+        registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
+        echo $namespace
+        echo $registry
+        
+        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} $registry/${{inputs.helm_chart_name}} --create-namespace
