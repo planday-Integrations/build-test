@@ -64,6 +64,11 @@ jobs:
         client-id: ${{ secrets.azure_client_id }}
         tenant-id: ${{ secrets.azure_tenant_id }}
         subscription-id: ${{ secrets.azure_subscription_id }}
+
+#    - uses: azure/setup-helm@v3
+#      with:
+#        version: 'v3.10.0' # default is latest (stable)
+#      id: install
         
     - name: Log in to Azure ACR
       run: |
@@ -75,10 +80,6 @@ jobs:
         helm repo update
         helm repo ls
 
-    - uses: azure/setup-helm@v3
-      with:
-        version: 'v3.10.0' # default is latest (stable)
-      id: install
 
     - name: Login-k8s
       uses: azure/aks-set-context@v3
@@ -91,4 +92,4 @@ jobs:
 
     - name: 'Deploy'
       run: |
-        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]) --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}} --create-namespace
+        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]") --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}} --create-namespace
