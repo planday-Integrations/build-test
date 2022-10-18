@@ -13,6 +13,11 @@ on:
         required: true
         description: "helm release name"
 
+      dns_name:
+        type: string
+        required: true
+        description: "dns name"
+
       image_name:
         type: string
         required: true
@@ -94,5 +99,6 @@ jobs:
         registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
         echo $namespace
         echo $registry
+        { kubectl create ns $namespace && kubectl label namespace $namespace istio-injection=enabled; } || echo "namespace exists, continuing"
         
-        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} $registry/${{inputs.helm_chart_name}} --create-namespace
+        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=${{inputs.dns_name}} --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} $registry/${{inputs.helm_chart_name}} --create-namespace
