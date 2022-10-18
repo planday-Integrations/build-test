@@ -29,7 +29,9 @@ on:
         required: true
       registry: 
         required: true
-      npm_token:
+      app_id:
+        required: true
+      private_key: 
         required: true
     outputs:
       image_name:
@@ -57,14 +59,15 @@ jobs:
       id-token: write # This is required for requesting the OIDC JWT
       contents: read  # This is required for actions/checkout
       packages: read
-      
+
     runs-on: ubuntu-latest
     outputs:
       image_name: ${{ steps.set-outputs.outputs.image_name }}
       image_version: ${{ steps.set-outputs.outputs.image_version }}
     steps:
-      - name: approved
-        run: echo "This PR was approved"
+
+
+
       - uses: actions/checkout@v2      
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
@@ -81,6 +84,13 @@ jobs:
         run: -|
           az acr login -n ${{secrets.registry}}
 
+      - name: Authorize Github app
+        id: generate_token
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ secrets.app_id }}
+          private_key: ${{ secrets.private_key }}
+
       - name: Build and push container image to registry
         uses: docker/build-push-action@v3
         with:
@@ -90,7 +100,7 @@ jobs:
             ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
-            NPM_TOKEN=${{secrets.npm_token}}
+            NPM_TOKEN='${{ steps.generate_token.outputs.token }}'
             ${{inputs.dockerargs}}
       - name: Set Outputs
         id: set-outputs
