@@ -91,4 +91,4 @@ jobs:
 
     - name: 'Deploy'
       run: |
-        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]) --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}}
+        helm upgrade ${{inputs.release_name}} --install --namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]) --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} ${{secrets.azure_acr_registry}}/${{inputs.helm_chart_name}} --create-namespace
