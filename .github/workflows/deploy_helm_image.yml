@@ -33,6 +33,10 @@ on:
         default: planday-integrations
         required: false
         description: helm chart to use for installation
+      env_variables:
+        type: string
+        description: environment variales for the format- key1=value1,key2=value2
+        required: false
     secrets:
       azure_client_id:
         required: true
@@ -46,6 +50,8 @@ on:
         required: true
       cluster_resource_group:
         required: true
+      env_secrets:
+        required: false
 
 
 jobs:
@@ -69,11 +75,6 @@ jobs:
         client-id: ${{ secrets.azure_client_id }}
         tenant-id: ${{ secrets.azure_tenant_id }}
         subscription-id: ${{ secrets.azure_subscription_id }}
-
-#    - uses: azure/setup-helm@v3
-#      with:
-#        version: 'v3.10.0' # default is latest (stable)
-#      id: install
         
     - name: Log in to Azure ACR
       run: |
@@ -101,6 +102,16 @@ jobs:
         echo $namespace
         echo $registry
 
+        SOURCES=(`${{inputs.env_variables}}  | sed 's/,/\n/g'`)
+        SOURCES= "$SOURCES (`${{secrets.env_secrets}}  | sed 's/,/\n/g'`)"
+        
+        helm_values=""
+
+        for avalue in $SOURCES
+        do
+            helm_values="$helm_values --set ${avalue}"
+        done
+
         { kubectl create ns $namespace && kubectl label namespace $namespace istio-injection=enabled; } || echo "namespace exists, continuing"
         
-        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=$dnsname --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} $registry/${{inputs.helm_chart_name}} --create-namespace
+        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=$dnsname --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} (echo $helm_values) $registry/${{inputs.helm_chart_name}} --create-namespace
