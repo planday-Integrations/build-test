@@ -47,11 +47,11 @@ on:
 jobs:
   determine-build:    
     runs-on: ubuntu-latest
-    environment: production
+    if: ${{ github.env == 'Production' }}
     steps:
       - name: "echo environment"
         run: |
-          echo setting environment to production
+          echo "environment is: ${{github.env}}"
         env:
           IMAGE_PREFIX: ""
 
