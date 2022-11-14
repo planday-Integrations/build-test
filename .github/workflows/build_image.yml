@@ -44,9 +44,7 @@ on:
         value: ${{ jobs.build-push-image.outputs.image_version }}
 
 jobs:
-
   build-push-image:
-    needs: determine-build
     permissions:
       id-token: write # This is required for requesting the OIDC JWT
       contents: read  # This is required for actions/checkout
@@ -57,9 +55,6 @@ jobs:
       image_name: ${{ steps.set-outputs.outputs.image_name }}
       image_version: ${{ steps.set-outputs.outputs.image_version }}
     steps:
-
-
-
       - uses: actions/checkout@v2      
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
