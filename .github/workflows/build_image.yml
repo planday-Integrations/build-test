@@ -1,8 +1,5 @@
 name: build and push docker image
 
-env:
-  IMAGE_PREFIX: "test-"
-
 on:
   workflow_call:
 
@@ -35,6 +32,8 @@ on:
         required: false
       mdu_pat:
         required: true
+      prefix:
+        require: true
 
     outputs:
       image_name:
@@ -45,16 +44,6 @@ on:
         value: ${{ jobs.build-push-image.outputs.image_version }}
 
 jobs:
-  determine-build:    
-    runs-on: ubuntu-latest
-    if: ${{ github.env == 'Production' }}
-    steps:
-      - name: "echo environment"
-        run: |
-          echo "environment is: ${{github.env}}"
-        env:
-          IMAGE_PREFIX: ""
-
 
   build-push-image:
     needs: determine-build
@@ -99,8 +88,8 @@ jobs:
         with:
           push: true
           tags: | 
-            ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:${{inputs.version}}
-            ${{ secrets.registry }}/${{ env.IMAGE_PREFIX }}${{inputs.image_name}}:latest
+            ${{ secrets.registry }}/${{ secrets.prefix }}${{inputs.image_name}}:${{inputs.version}}
+            ${{ secrets.registry }}/${{ secrets.prefix }}${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
             NPM_TOKEN=${{ secrets.mdu_pat }}
@@ -108,7 +97,7 @@ jobs:
       - name: Set Outputs
         id: set-outputs
         run: |
-          echo "::set-output name=image_name::${{ env.IMAGE_PREFIX }}${{inputs.image_name}}"
+          echo "::set-output name=image_name::${{ secrets.prefix }}${{inputs.image_name}}"
           echo "::set-output name=image_version::${{inputs.version}}"
 
 
