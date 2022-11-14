@@ -3,21 +3,10 @@ name: Build and deploy BFF
 on:
   workflow_call:
     inputs:     
-      environment:
-        description: 'Environment to deploy to'
-        type: string
-        required: true
-
       release_name:
         type: string
         required: true
         description: "helm release name"
-
-      dns_name:
-        type: string
-        required: true
-        description: "dns name"
-
       image_name:
         type: string
         required: true
@@ -35,7 +24,7 @@ on:
         description: helm chart to use for installation
       env_variables:
         type: string
-        description: environment variales for the format- key1=value1,key2=value2
+        description: "environment variables for the format: --set=key1=value1 --set=key2=value2"
         required: false
     secrets:
       azure_client_id:
@@ -52,6 +41,10 @@ on:
         required: true
       env_secrets:
         required: false
+      dns_name:
+        required: true
+      environment:
+        required: true
 
 
 jobs:
@@ -96,9 +89,9 @@ jobs:
 
     - name: 'Deploy'
       run: |
-        namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
+        namespace=$(echo ${{secrets.environment}} | tr "[:upper:]" "[:lower:]")
         registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
-        dnsname=$(echo ${{inputs.dns_name}} | tr "[:upper:]" "[:lower:]")
+        dnsname=$(echo ${{secrets.dns_name}} | tr "[:upper:]" "[:lower:]")
         echo $namespace
         echo $registry
         echo ${{inputs.env_variables}}
