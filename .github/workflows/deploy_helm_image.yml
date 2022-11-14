@@ -24,8 +24,16 @@ on:
         description: helm chart to use for installation
       env_variables:
         type: string
-        description: "environment variables for the format: --set=key1=value1 --set=key2=value2"
+        description: "environment variales for the format: --set=key1=value1 --set=key2=value2"
         required: false
+      dns_name:
+        type: string
+        required: true
+        description: "dns name"
+      environment:
+        description: 'Environment to deploy to'
+        type: string
+        required: true
     secrets:
       azure_client_id:
         required: true
@@ -41,10 +49,7 @@ on:
         required: true
       env_secrets:
         required: false
-      dns_name:
-        required: true
-      environment:
-        required: true
+
 
 
 jobs:
@@ -89,10 +94,11 @@ jobs:
 
     - name: 'Deploy'
       run: |
-        namespace=$(echo ${{secrets.environment}} | tr "[:upper:]" "[:lower:]")
+        namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
         registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
-        dnsname=$(echo ${{secrets.dns_name}} | tr "[:upper:]" "[:lower:]")
+        dnsname=$(echo ${{inputs.dns_name}} | tr "[:upper:]" "[:lower:]")
         echo $namespace
+        echo $dnsname
         echo $registry
         echo ${{inputs.env_variables}}
  
