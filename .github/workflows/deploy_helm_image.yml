@@ -106,4 +106,4 @@ jobs:
 
         { kubectl create ns $namespace && kubectl label namespace $namespace istio-injection=enabled; } || echo "namespace exists, continuing"
         
-        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=$dnsname --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}} (echo ${{inputs.env_variables}}) (echo ${{secrets.env_secrets}}) $registry/${{inputs.helm_chart_name}} --create-namespace
+        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=$dnsname --set image.tag=${{inputs.image_version}} --set image.name=${{inputs.image_name}}  ${{inputs.env_variables}} ${{secrets.env_secrets}} $registry/${{inputs.helm_chart_name}} --create-namespace
