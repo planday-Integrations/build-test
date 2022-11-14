@@ -33,7 +33,7 @@ on:
       mdu_pat:
         required: true
       prefix:
-        require: true
+        required: true
 
     outputs:
       image_name:
