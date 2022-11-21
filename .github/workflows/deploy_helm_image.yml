@@ -95,7 +95,7 @@ jobs:
       run: |
         namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
         registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
-        dnsname=$(echo ${{inputs.dns_name}} | tr "[:upper:]" "[:lower:]")
+        dnsname=$(echo ${{secrets.dns_name}} | tr "[:upper:]" "[:lower:]")
         echo $namespace
         echo $dnsname
         echo $registry
