@@ -4,6 +4,9 @@ on:
   workflow_call:
 
     inputs:
+      environment: 
+        type: string
+        required: false
       image_name:
         required: true
         type: string
@@ -51,6 +54,7 @@ jobs:
       packages: read
 
     runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
     outputs:
       image_name: ${{ steps.set-outputs.outputs.image_name }}
       image_version: ${{ steps.set-outputs.outputs.image_version }}
