@@ -96,7 +96,9 @@ jobs:
       - name: Set Outputs
         id: set-outputs
         run: |
-          echo "::set-output name=image_name::${{ secrets.prefix }}${{inputs.image_name}}"
+          $image_name_mask = "${{ secrets.prefix }}${{inputs.image_name}}"
+          echo "::add-mask::$image_name_mask"
+          echo "::set-output name=image_name::$image_name_mask"
           echo "::set-output name=image_version::${{inputs.version}}"
 
 
