@@ -4,9 +4,6 @@ on:
   workflow_call:
 
     inputs:
-      environment: 
-        type: string
-        required: false
       image_name:
         required: true
         type: string
@@ -54,7 +51,6 @@ jobs:
       packages: read
 
     runs-on: ubuntu-latest
-    environment: ${{inputs.environment}}
     outputs:
       image_name: ${{ steps.set-outputs.outputs.image_name }}
       image_version: ${{ steps.set-outputs.outputs.image_version }}
@@ -96,9 +92,7 @@ jobs:
       - name: Set Outputs
         id: set-outputs
         run: |
-          image_name_mask=$( echo "${{ secrets.prefix }}${{inputs.image_name}}")
-          echo "::add-mask::$image_name_mask"
-          echo "::set-output name=image_name::$image_name_mask"
+          echo "::set-output name=image_name::${{secrets.prefix}}${{inputs.image_name}}"
           echo "::set-output name=image_version::${{inputs.version}}"
 
 
