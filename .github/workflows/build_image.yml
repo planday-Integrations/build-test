@@ -17,6 +17,9 @@ on:
         type: string
         description: "Additional build arguments for docker, provided as a multiline string"
         required: false
+      environment:
+        type: string
+        required: false
     secrets: 
       azure_client_id: 
         required: true
@@ -43,6 +46,7 @@ on:
 
 jobs:
   build-push-image:
+    environment: ${{ inputs.environment }}
     permissions:
       id-token: write # This is required for requesting the OIDC JWT
       contents: read  # This is required for actions/checkout
