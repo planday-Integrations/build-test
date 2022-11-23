@@ -32,8 +32,6 @@ on:
         required: false
       mdu_pat:
         required: true
-      prefix:
-        required: true
 
     outputs:
       image_name:
@@ -83,8 +81,8 @@ jobs:
         with:
           push: true
           tags: | 
-            ${{ secrets.registry }}/${{ secrets.prefix }}${{inputs.image_name}}:${{inputs.version}}
-            ${{ secrets.registry }}/${{ secrets.prefix }}${{inputs.image_name}}:latest
+            ${{ secrets.registry }}/${{inputs.image_name}}:${{inputs.version}}
+            ${{ secrets.registry }}/${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
             NPM_TOKEN=${{ secrets.mdu_pat }}
@@ -92,7 +90,7 @@ jobs:
       - name: Set Outputs
         id: set-outputs
         run: |
-          echo "::set-output name=image_name::${{secrets.prefix}}${{inputs.image_name}}"
+          echo "::set-output name=image_name::${{inputs.image_name}}"
           echo "::set-output name=image_version::${{inputs.version}}"
 
 
