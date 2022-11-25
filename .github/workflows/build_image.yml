@@ -29,10 +29,6 @@ on:
         required: true
       registry: 
         required: true
-      app_id:
-        required: false
-      private_key: 
-        required: false
       mdu_pat:
         required: true
 
