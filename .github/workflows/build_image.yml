@@ -31,7 +31,7 @@ on:
         required: true
       mdu_pat:
         required: true
-      github_token:
+      gh_token:
         required: false
 
     outputs:
