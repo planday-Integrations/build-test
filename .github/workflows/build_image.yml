@@ -78,7 +78,6 @@ jobs:
             ${{ secrets.registry }}/${{inputs.image_name}}:latest
           file: ${{ inputs.dockerfile }}
           build-args: |
-            PKGPASSWORD=${{ secrets.GITHUB_TOKEN }}
             NPM_TOKEN=${{ secrets.mdu_pat }}
             ${{inputs.dockerargs}}
       - name: Set Outputs
