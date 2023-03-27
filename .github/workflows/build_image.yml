@@ -31,6 +31,8 @@ on:
         required: true
       mdu_pat:
         required: true
+      github_token:
+        required: false
 
     outputs:
       image_name:
@@ -79,6 +81,7 @@ jobs:
           file: ${{ inputs.dockerfile }}
           build-args: |
             NPM_TOKEN=${{ secrets.mdu_pat }}
+            PKGPASSWORD=${{ secrets.github_token }}
             ${{inputs.dockerargs}}
       - name: Set Outputs
         id: set-outputs
