@@ -81,7 +81,7 @@ jobs:
           file: ${{ inputs.dockerfile }}
           build-args: |
             NPM_TOKEN=${{ secrets.mdu_pat }}
-            PKGPASSWORD=${{ secrets.github_token }}
+            PKGPASSWORD=${{ secrets.gh_token }}
             ${{inputs.dockerargs}}
       - name: Set Outputs
         id: set-outputs
