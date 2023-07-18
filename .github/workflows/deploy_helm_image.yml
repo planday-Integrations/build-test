@@ -79,7 +79,7 @@ jobs:
     
     - name: 'Add helm repository'
       run: |
-        az acr repository update --name ${{secrets.azure_acr_registry}}
+        helm repo add ${{secrets.azure_acr_registry}}
         helm repo update
         helm repo ls
 
