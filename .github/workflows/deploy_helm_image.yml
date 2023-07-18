@@ -79,11 +79,9 @@ jobs:
     
     - name: 'Add helm repository'
       run: |
-        helm version
-        helm repo add plandayintegrationstest "https://${{secrets.azure_acr_registry}}:443/helm/v1/repo" --pass-credentials
+        helm repo add plandayintegrationstest "https://${{secrets.azure_acr_registry}}:443/helm/v1/repo" --username plandayintegrationstest --password WK8finkZJV=Z1ZSaEuNu7TjmpjNAUoNv --pass-credentials
         helm repo update
         helm repo ls
-
 
     - name: Login-k8s
       uses: azure/aks-set-context@v3
