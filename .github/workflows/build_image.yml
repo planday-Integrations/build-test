@@ -84,7 +84,7 @@ jobs:
       - name: Set Outputs
         id: set-outputs
         run: |
-          echo "::set-output name=image_name::${{inputs.image_name}}"
-          echo "::set-output name=image_version::${{inputs.version}}"
+          echo "image_name=${{inputs.image_name}}" >> $GITHUB_OUTPUT
+          echo "image_version=${{inputs.version}}" >> $GITHUB_OUTPUT
 
 
