@@ -79,7 +79,7 @@ jobs:
     
     - name: 'Add helm repository'
       run: |
-        helm repo add plandayintegrationstest "https://${{secrets.azure_acr_registry}}:443/helm/v1/repo" --username plandayintegrationstest --password WK8finkZJV=Z1ZSaEuNu7TjmpjNAUoNv --pass-credentials
+        helm repo add plandayintegrationstest "https://${{secrets.azure_acr_registry}}:443/helm/v1/repo" --username ${{secrets.acr_appid}} --password ${{secrets.acr_secret}} --pass-credentials
         helm repo update
         helm repo ls
 
