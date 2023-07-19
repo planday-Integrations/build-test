@@ -79,11 +79,7 @@ jobs:
     
     - name: 'Add helm repository'
       run: |
-        acr_username="00000000-0000-0000-0000-000000000000"
-        acr_password=$(az acr login -n ${{secrets.azure_acr_registry}} --expose-token --output tsv --query accessToken)
-
-        helm repo add plandayintegrationstest "https://${{secrets.azure_acr_registry}}:443/helm/v1/repo"
-        helm registry login ${{secrets.azure_acr_registry}} --username $acr_username --password $password
+        az acr helm repo add --name ${{secrets.azure_acr_registry}}
         helm repo update
         helm repo ls
 
