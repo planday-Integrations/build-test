@@ -11,12 +11,10 @@ on:
         type: string
         required: true
         description: "image name"
-      
       image_version:
         type: string
         required: true
         description: "image version/tag"
-
       helm_chart_name:
         type: string
         default: planday-integrations
@@ -48,8 +46,6 @@ on:
       env_secrets:
         required: false
 
-
-
 jobs:
   deploy:    
     environment: ${{inputs.environment}}
@@ -58,7 +54,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:      
     - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v3
       with:
         driver: docker # defaults to "docker-containerized"      
 
@@ -67,7 +63,7 @@ jobs:
         which az || { curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash ; }
 
     - name: 'Az CLI login'
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         client-id: ${{ secrets.azure_client_id }}
         tenant-id: ${{ secrets.azure_tenant_id }}
@@ -75,16 +71,14 @@ jobs:
         
     - name: Log in to Azure ACR
       run: |
-        az acr login -n ${{secrets.azure_acr_registry}}
+        az acr login --name ${{secrets.azure_acr_registry}}
     
-    - name: 'Add helm repository'
+    - name: Login to ACR
       run: |
-        az acr helm repo add --name ${{secrets.azure_acr_registry}}
-        helm repo update
-        helm repo ls
+        az acr login --name ${{secrets.azure_acr_registry}}
 
     - name: Login-k8s
-      uses: azure/aks-set-context@v3
+      uses: azure/aks-set-context@v4
       with:
         resource-group: ${{ secrets.cluster_name }}
         cluster-name: ${{ secrets.cluster_resource_group }}
@@ -93,14 +87,24 @@ jobs:
     - name: 'Deploy'
       run: |
         namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
-        registry=$(echo ${{secrets.azure_acr_registry}} | sed 's/.azurecr.io//g' )
+        registry="oci://$${{secrets.azure_acr_registry}}/helm"
         dnsname=$(echo ${{secrets.dns_name}} | tr "[:upper:]" "[:lower:]")
         echo $namespace
         echo $dnsname
         echo $registry
         echo ${{inputs.env_variables}}
- 
 
         { kubectl create ns $namespace && kubectl label namespace $namespace istio-injection=enabled; } || echo "namespace exists, continuing"
         
-        helm upgrade ${{inputs.release_name}} --install --namespace=$namespace --set network.dnsName=$dnsname --set image.tag=${{inputs.image_version}} --set image.repository=${{ secrets.azure_acr_registry }} --set image.name=${{inputs.image_name}} $registry/${{inputs.helm_chart_name}} --create-namespace ${{inputs.env_variables}} ${{secrets.env_secrets}} 
+        helm upgrade \
+          ${{inputs.release_name}}
+          --install \
+          --namespace=$namespace \
+          --set network.dnsName=$dnsname \
+          --set image.tag=${{inputs.image_version}} \
+          --set image.repository=${{ secrets.azure_acr_registry }} \
+          --set image.name=${{inputs.image_name}} \
+          --create-namespace \
+          $registry/${{inputs.helm_chart_name}} \
+          ${{inputs.env_variables}} \
+          ${{secrets.env_secrets}}
