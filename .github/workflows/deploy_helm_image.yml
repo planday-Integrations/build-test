@@ -68,11 +68,7 @@ jobs:
         client-id: ${{ secrets.azure_client_id }}
         tenant-id: ${{ secrets.azure_tenant_id }}
         subscription-id: ${{ secrets.azure_subscription_id }}
-        
-    - name: Log in to Azure ACR
-      run: |
-        az acr login --name ${{secrets.azure_acr_registry}}
-    
+
     - name: Login to ACR
       run: |
         az acr login --name ${{secrets.azure_acr_registry}}
@@ -87,7 +83,7 @@ jobs:
     - name: 'Deploy'
       run: |
         namespace=$(echo ${{inputs.environment}} | tr "[:upper:]" "[:lower:]")
-        registry="oci://$${{secrets.azure_acr_registry}}/helm"
+        registry="oci://${{secrets.azure_acr_registry}}/helm"
         dnsname=$(echo ${{secrets.dns_name}} | tr "[:upper:]" "[:lower:]")
         echo $namespace
         echo $dnsname
